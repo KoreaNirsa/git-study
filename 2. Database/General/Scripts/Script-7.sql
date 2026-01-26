@@ -22,6 +22,28 @@ ON e.emp_no = t.emp_no;
 
 SELECT * FROM titles;
 
+-- Q6. 부서 이름(dept_name)과 부서별 사원 수(count)를 조회하세요.
+--  - dept_name 컬럼은 departments 테이블에 있음
+--  - dept_emp에 사원 수(emp_no의 수)가 있음
+SELECT *
+FROM employees e
+JOIN dept_emp de ON e.emp_no = de.emp_no
+JOIN departments d ON de.dept_no = d.dept_no ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
