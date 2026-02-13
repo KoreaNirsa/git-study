@@ -32,7 +32,7 @@ public class MemberController {
 	 * localhost:8080/member/register/form으로 GET 요청이 오면 실행됩니다.
 	 * @return 
 	 */
-	@GetMapping("/register/form") // GET 요청만 받음
+	@GetMapping("/register/form") // GET 요청만 받음 
 	public String registerForm() {
 		return "pages/member/register";
 	}
@@ -68,7 +68,6 @@ public class MemberController {
 	@PostMapping("/login")
 	public String login(ReqLoginDTO request,
 						HttpSession session) {
-		System.out.println();
 		ResLoginDTO response = memberService.login(request);
 		
 		// 로그인 실패할 경우 회원가입 페이지로 이동
@@ -95,6 +94,8 @@ public class MemberController {
 		
 		return "redirect:/";
 	}
+	
+	
 	
 }
 

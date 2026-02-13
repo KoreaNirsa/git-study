@@ -62,15 +62,15 @@ public class NoticeServiceImpl implements BoardService {
 		List<ResBoardDTO> list = new ArrayList<>();
 		
 		for(Board b : boardList) {
-			ResBoardDTO response = new ResBoardDTO();
-			 
-			response.setId(b.getId());
-			response.setCategory(b.getCategory());
-			response.setTitle(b.getTitle());
-			response.setContent(b.getContent());
-			response.setWriterName(b.getWriter().getUserName());
-			response.setCreatedAt(b.getCreatedAt());
-			
+			ResBoardDTO response = ResBoardDTO.builder()
+									.id(b.getId())
+									.category(b.getCategory())
+									.title(b.getTitle())
+									.content(b.getContent())
+									.writerName(b.getWriter().getUserName())
+									.createdAt(b.getCreatedAt())
+									.build();
+			 	
 			list.add(response);
 		}
 		
@@ -95,7 +95,7 @@ public class NoticeServiceImpl implements BoardService {
 	//  5. 최종적으로 종료되며 트랜잭션 commit 수행
 	@Override
 	@Transactional
-	public void getBoardDetail(Long id) {
+	public ResBoardDTO getBoardDetail(Long id) {
 		// 1. 게시글 조회
 		Board board = boardRepository.findById(id).orElse(null);
 		
@@ -115,7 +115,59 @@ public class NoticeServiceImpl implements BoardService {
 		
 		return response;
 	}
-	 
+	
+	@Override
+	@Transactional
+	public ResBoardDTO getBoardDetailEdit(Long id) {
+		// 1. 게시글 조회
+		Board board = boardRepository.findById(id).orElse(null);
+		 
+		// 3. 응답 DTO 변환
+		ResBoardDTO response = ResBoardDTO.builder()
+								.id(board.getId())
+								.title(board.getTitle())
+								.content(board.getContent())
+								.writerName(board.getWriter().getUserName())
+								.createdAt(board.getCreatedAt())
+								.viewCount(board.getViewCount())
+								.build();
+		
+		return response;
+	}
+	
+	@Override
+	@Transactional
+	public void edit(ReqBoardDTO request, Long id) {
+		
+		// 1. 기존 게시글이 존재하는지 조회
+		Board board = boardRepository.findById(request.getId()).orElse(null);
+		
+		if(board != null && !board.getWriter().getId().equals(id)) {
+			System.out.println("게시글이 없거나 작성자가 아닙니다.");
+		}
+
+		// 2. 게시글 수정 반영
+		board.setCategory(request.getCategory());
+		board.setTitle(request.getTitle());
+		board.setContent(request.getContent());;
+	}
+	
+	@Override
+	@Transactional 
+	public void delete(Long id, Long loginUserId) {
+		// 1. id로 게시글 조회
+		Board board = boardRepository.findById(id).orElse(null);
+		
+		// 2. 해당하는 게시글이 존재하는지 확인 및 작성자 검증
+		if(board == null) {
+			System.out.println("삭제할 수 없습니다.");
+		}  else if(!board.getWriter().getId().equals(loginUserId)) {
+			System.out.println("삭제 권한이 없습니다.");
+		}
+ 		
+		// 3. 삭제 처리
+		boardRepository.delete(board);
+	}
 } 
  
 
